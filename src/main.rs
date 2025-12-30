@@ -1,9 +1,9 @@
 use simple_config::Config;
-use tmtc_linux_ground::TMTCConfig;
+use tmtc_linux_ground::GSTConfig;
 
 #[tokio::main]
 async fn main() {
-    let mut config = TMTCConfig::new();
+    let mut config = GSTConfig::new();
     config.parse_file("tmtc.conf").expect("could not parse config file");
     config.parse_cli().expect("could not parse cli");
 
