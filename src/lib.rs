@@ -28,9 +28,9 @@ fn crc_ccitt(bytes: &[u8]) -> u16 {
 }
 
 pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
-    // let nats_client = async_nats::ConnectOptions::with_user_and_password(config.nats_user, config.nats_pwd)
-    //     .connect(config.nats_address)
-    //     .await.map_err(|e| GSTError::ConnectNATS(e.kind()))?;
+    let nats_client = async_nats::ConnectOptions::with_user_and_password(config.nats_user, config.nats_pwd)
+        .connect(config.nats_address)
+        .await.map_err(|e| GSTError::ConnectNATS(e.kind()))?;
     
     let uart_rx: SerialStream =
         tokio_serial::new(config.serial_port, config.serial_baud)
@@ -56,6 +56,10 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
                                 println!("lst rssi: {}", low_rate_telemetry.rssi);
                                 println!("lst send: {}", low_rate_telemetry.packets_send);
                                 println!("lst good: {}", low_rate_telemetry.packets_good);
+                                let serialized_telem = low_rate_telemetry.serialize();
+                                for (address, bytes) in serialized_telem {
+                                    nats_client.publish(address, bytes.into()).await.unwrap();
+                                }
                             }
                             Err(e) => {
                                 match e {
@@ -71,6 +75,10 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
                                 println!("parsed mid rate telem");
                                 println!("bat 1 voltage: {}", mid_rate_telemetry.bat1_voltage);
                                 println!("internal temp: {}", mid_rate_telemetry.internal_temperature);
+                                let serialized_telem = mid_rate_telemetry.serialize();
+                                for (address, bytes) in serialized_telem {
+                                    nats_client.publish(address, bytes.into()).await.unwrap();
+                                }
                             }
                             Err(e) => {
                                 match e {

@@ -1117,6 +1117,7 @@ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 [[package]]
 name = "openlst-driver"
 version = "0.1.0"
+source = "git+ssh://git@github.com/S2outh/RocketLST-software.git#13bca81796f086cfd304bcff210f5876ec40530c"
 dependencies = [
  "embedded-io-async",
  "heapless 0.9.2",
@@ -1646,12 +1647,14 @@ dependencies = [
 [[package]]
 name = "south-common"
 version = "0.2.0"
-source = "git+ssh://git@github.com/S2outh/south-common.git#3e5e27d1053c0c47dc1298a3097e376bccd1eadd"
+source = "git+ssh://git@github.com/S2outh/south-common.git#61d4869ce995e3209f85653d40543157f1266cc0"
 dependencies = [
  "defmt 1.0.1",
  "embassy-stm32",
  "embedded-can",
  "heapless 0.9.2",
+ "serde",
+ "serde_cbor",
  "tmtc-system",
 ]
 
@@ -1705,9 +1708,9 @@ checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 
 [[package]]
 name = "syn"
-version = "2.0.111"
+version = "2.0.112"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "390cc9a294ab71bdb1aa2e99d13be9c753cd2d7bd6560c77118597410c4d2e87"
+checksum = "21f182278bf2d2bcb3c88b1b08a37df029d71ce3d3ae26168e3c653b213b99d4"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1814,8 +1817,6 @@ dependencies = [
  "embedded-io-adapters",
  "embedded-io-async",
  "openlst-driver",
- "serde",
- "serde_cbor",
  "simple_config",
  "south-common",
  "tokio",
@@ -1825,15 +1826,16 @@ dependencies = [
 [[package]]
 name = "tmtc-system"
 version = "0.1.0"
-source = "git+ssh://git@github.com/S2outh/telemetry-system.git#1876a3b613ed8c3fd6bc01331f3c6c6830d18150"
+source = "git+ssh://git@github.com/S2outh/telemetry-system.git#7bdf876d277137ea6ebbc52d7f55a3f9017e3399"
 dependencies = [
+ "serde",
  "tmtc-system-macros",
 ]
 
 [[package]]
 name = "tmtc-system-macros"
 version = "0.1.0"
-source = "git+ssh://git@github.com/S2outh/telemetry-system.git#1876a3b613ed8c3fd6bc01331f3c6c6830d18150"
+source = "git+ssh://git@github.com/S2outh/telemetry-system.git#7bdf876d277137ea6ebbc52d7f55a3f9017e3399"
 dependencies = [
  "heck",
  "proc-macro2",
@@ -2368,6 +2370,6 @@ dependencies = [
 
 [[package]]
 name = "zmij"
-version = "1.0.3"
+version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e9747e91771f56fd7893e1164abd78febd14a670ceec257caad15e051de35f06"
+checksum = "e3280a1b827474fcd5dbef4b35a674deb52ba5c312363aef9135317df179d81b"
