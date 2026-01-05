@@ -717,7 +717,7 @@ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 [[package]]
 name = "openlst-driver"
 version = "0.1.0"
-source = "git+ssh://git@github.com/S2outh/RocketLST-software.git#40031efd0071dac31d6e3ffe01a3104890a362b0"
+source = "git+ssh://git@github.com/S2outh/RocketLST-software.git#82a7c84edde1b13d158f54145b38862da229a6d6"
 dependencies = [
  "embedded-io-async",
  "heapless",
@@ -1189,7 +1189,7 @@ dependencies = [
 [[package]]
 name = "south-common"
 version = "0.2.0"
-source = "git+ssh://git@github.com/S2outh/south-common.git#f44641214dfdee3f4aaaafb2da7cc09517c5a95e"
+source = "git+ssh://git@github.com/S2outh/south-common.git#46d7a5f1e0a8ba164009b91f20cf67f146cc7e59"
 dependencies = [
  "serde",
  "serde_cbor",

@@ -1,9 +1,12 @@
+mod macros;
+
 use simple_config::Config;
 use embedded_io_adapters::tokio_1::FromTokio;
 use openlst_driver::lst_receiver;
 use tokio_serial::{SerialPortBuilderExt, SerialStream};
 
 use south_common::{LowRateTelemetry, MidRateTelemetry, HighRateTelemetry, Beacon, ParseError};
+
 
 #[derive(Debug)]
 pub enum GSTError {
@@ -43,57 +46,15 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
     let mut mid_rate_telemetry = MidRateTelemetry::new();
     let mut high_rate_telemetry = HighRateTelemetry::new();
 
-    macro_rules! parse_beacon {
-        ($data: ident, $beacon:ident)  => {
-            match $beacon.from_bytes($data, &mut crc_ccitt) {
-                Ok(()) => {
-                    println!("parsed {}", stringify!($beacon));
-                    let serialized_telem = $beacon.serialize();
-                    for (address, bytes) in serialized_telem {
-                        nats_client.publish(address, bytes.into()).await.unwrap();
-                    }
-                }
-                Err(e) => {
-                    match e {
-                        ParseError::WrongId => (),
-                        ParseError::BadCRC => eprintln!("{} with bad crc received", stringify!($beacon)),
-                        ParseError::OutOfMemory => eprintln!("{} could not be parsed: not enough bytes", stringify!($beacon)),
-                    }
-                }
-            }
-        };
-        ($data: ident, $beacon:ident, ($($field:ident),*)) => {
-            match $beacon.from_bytes($data, &mut crc_ccitt) {
-                Ok(()) => {
-                    println!("parsed {}", stringify!($beacon));
-                    $(
-                        println!("{} > {}: {}", stringify!($beacon), stringify!($field), $beacon.$field);
-                    )*
-                    let serialized_telem = $beacon.serialize();
-                    for (address, bytes) in serialized_telem {
-                        nats_client.publish(address, bytes.into()).await.unwrap();
-                    }
-                }
-                Err(e) => {
-                    match e {
-                        ParseError::WrongId => (),
-                        ParseError::BadCRC => eprintln!("{} with bad crc received", stringify!($beacon)),
-                        ParseError::OutOfMemory => eprintln!("{} could not be parsed: not enough bytes", stringify!($beacon)),
-                    }
-                }
-            }
-        };
-    }
-
     loop {
         match lst_receiver.receive().await {
             Ok(msg) => {
                 match msg {
                     lst_receiver::LSTMessage::Relay(data) => {
                         println!("data: {}", data.len());
-                        parse_beacon!(data, low_rate_telemetry, (uptime, rssi, packets_good));
-                        parse_beacon!(data, mid_rate_telemetry, (bat1_voltage));
-                        parse_beacon!(data, high_rate_telemetry);
+                        parse_beacon!(data, low_rate_telemetry, nats_client, (uptime, rssi, packets_good));
+                        parse_beacon!(data, mid_rate_telemetry, nats_client, (bat1_voltage));
+                        parse_beacon!(data, high_rate_telemetry, nats_client, (imu1_accel_full_range));
                     },
                     _ => () // Ignore internal messages for now
                 }
