@@ -2,7 +2,7 @@ mod macros;
 
 use simple_config::Config;
 use embedded_io_adapters::tokio_1::FromTokio;
-use openlst_driver::lst_receiver;
+use openlst_driver::lst_receiver::{LSTMessage, LSTReceiver};
 use tokio_serial::{SerialPortBuilderExt, SerialStream};
 
 use south_common::{LowRateTelemetry, MidRateTelemetry, HighRateTelemetry, Beacon, ParseError};
@@ -40,7 +40,7 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
             .open_native_async()
             .map_err(|e| GSTError::SerialError(e))?;
 
-    let mut lst_receiver = lst_receiver::LSTReceiver::new(FromTokio::new(uart_rx));
+    let mut lst_receiver = LSTReceiver::new(FromTokio::new(uart_rx));
 
     let mut low_rate_telemetry = LowRateTelemetry::new();
     let mut mid_rate_telemetry = MidRateTelemetry::new();
@@ -50,13 +50,18 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
         match lst_receiver.receive().await {
             Ok(msg) => {
                 match msg {
-                    lst_receiver::LSTMessage::Relay(data) => {
-                        println!("data: {}", data.len());
+                    LSTMessage::Relay(data) => {
                         parse_beacon!(data, low_rate_telemetry, nats_client, (uptime, rssi, packets_good));
                         parse_beacon!(data, mid_rate_telemetry, nats_client, (bat1_voltage));
                         parse_beacon!(data, high_rate_telemetry, nats_client, (imu1_accel_full_range));
                     },
-                    _ => () // Ignore internal messages for now
+                    LSTMessage::Telem(_) => {
+                        println!("telem");
+                        // TODO
+                    },
+                    LSTMessage::Ack => println!("ack"),
+                    LSTMessage::Nack => println!("nack"),
+                    LSTMessage::Unknown(a) => println!("unknown: {}", a),
                 }
             },
             Err(e) => {

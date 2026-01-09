@@ -4,7 +4,7 @@ macro_rules! parse_beacon {
     ($data: ident, $beacon:ident, $nats_client:ident)  => {
         match $beacon.from_bytes($data, &mut crc_ccitt) {
             Ok(()) => {
-                println!("parsed {}", stringify!($beacon));
+                println!("----------- Parsed {}", stringify!($beacon));
                 let serialized_telem = $beacon.serialize();
                 for (address, bytes) in serialized_telem {
                     $nats_client.publish(address, bytes.into()).await.unwrap();
@@ -22,7 +22,7 @@ macro_rules! parse_beacon {
     ($data: ident, $beacon:ident, $nats_client:ident, ($($field:ident),*)) => {
         match $beacon.from_bytes($data, &mut crc_ccitt) {
             Ok(()) => {
-                println!("parsed {}", stringify!($beacon));
+                println!("----------- Parsed {}", stringify!($beacon));
                 $(
                     println!("{} > {}: {:?}", stringify!($beacon), stringify!($field), $beacon.$field);
                 )*
