@@ -53,7 +53,7 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
                     LSTMessage::Relay(data) => {
                         parse_beacon!(data, low_rate_telemetry, nats_client, (uptime, rssi, packets_good));
                         parse_beacon!(data, mid_rate_telemetry, nats_client, (bat1_voltage));
-                        parse_beacon!(data, high_rate_telemetry, nats_client, (imu1_accel_full_range));
+                        parse_beacon!(data, high_rate_telemetry, nats_client, (imu1_accel_full_range, internal_temperature));
                     },
                     LSTMessage::Telem(_) => {
                         println!("telem");
