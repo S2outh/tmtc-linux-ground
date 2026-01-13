@@ -56,16 +56,16 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
                         parse_beacon!(data, high_rate_telemetry, nats_client, (imu1_accel_full_range, internal_temperature));
                     },
                     LSTMessage::Telem(_) => {
-                        println!("telem");
+                        println!("[LST] Telem");
                         // TODO
                     },
-                    LSTMessage::Ack => println!("ack"),
-                    LSTMessage::Nack => println!("nack"),
-                    LSTMessage::Unknown(a) => println!("unknown: {}", a),
+                    LSTMessage::Ack => println!("[LST] Ack"),
+                    LSTMessage::Nack => println!("[LST] Nack"),
+                    LSTMessage::Unknown(a) => println!("[LST] Unknown: {}", a),
                 }
             },
             Err(e) => {
-                eprintln!("error in receiving frame: {:?}", e);
+                eprintln!("[ERROR] error in receiving frame: {:?}", e);
             }
         }
     }
