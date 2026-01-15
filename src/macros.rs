@@ -4,16 +4,19 @@ macro_rules! parse_beacon {
     ($data: ident, $beacon:ident, $nats_client:ident)  => {
         parse_beacon!($data, $beacon, $nats_client, ());
     };
-    ($data: ident, $beacon:ident, $nats_client:ident, ($($field:ident),*)) => {
+    ($data: ident, $beacon:ident, $nats_sender:ident, ($($field:ident),*)) => {
         match $beacon.from_bytes($data, &mut crc_ccitt) {
             Ok(()) => {
                 println!("[BEACON] Parsed {} at {}", stringify!($beacon), $beacon.timestamp);
                 $(
-                    println!("[TELEM] {}: {:?}", stringify!($field), $beacon.$field);
+                    if let Some(value) = $beacon.$field {
+                        println!("[TELEM] {}: {:#?}", stringify!($field), value);
+                    }
                 )*
-                let serialized_telem = $beacon.serialize();
-                for (address, bytes) in serialized_telem {
-                    $nats_client.publish(address, bytes.into()).await.unwrap();
+                if let Some(sender) = &$nats_sender {
+                    for telem in $beacon.serialize() {
+                        let _ = sender.send(telem).await;
+                    }
                 }
             }
             Err(e) => {
@@ -27,3 +30,23 @@ macro_rules! parse_beacon {
     };
 }
 
+
+#[macro_export]
+macro_rules! print_lst_value {
+    ($lst_telem:ident, $field:ident) => {
+        println!("[LST] {}: {:?}", stringify!($field), $lst_telem.$field);
+    }
+}
+
+#[macro_export]
+macro_rules! pub_lst_value {
+    ($nats_sender: ident, $lst_telem:ident, $timestamp: ident, ($($field:ident),*)) => {
+        $(
+            if let Some(sender) = $nats_sender {
+                let nats_value = NatsTelemetry::new($timestamp, $lst_telem.$field);
+                let bytes = serde_cbor::to_vec(&nats_value).unwrap();
+                let _ = sender.send((concat!("groundstation.lst.", stringify!($field)), bytes)).await;
+            }
+        )*
+    }
+}

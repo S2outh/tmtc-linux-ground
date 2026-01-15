@@ -1323,12 +1323,14 @@ dependencies = [
 
 [[package]]
 name = "tmtc-linux-ground"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "async-nats",
  "embedded-io-adapters",
  "embedded-io-async",
  "openlst-driver",
+ "serde",
+ "serde_cbor",
  "simple_config",
  "south-common",
  "tokio",

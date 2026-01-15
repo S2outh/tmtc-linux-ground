@@ -1,18 +1,38 @@
 mod macros;
 
+use serde;
+use serde_cbor;
+
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
 use simple_config::Config;
 use embedded_io_adapters::tokio_1::FromTokio;
-use openlst_driver::lst_receiver::{LSTMessage, LSTReceiver};
+use openlst_driver::{lst_receiver::{LSTMessage, LSTReceiver, LSTTelemetry}, lst_sender::{LSTCmd, LSTSender}};
 use tokio_serial::{SerialPortBuilderExt, SerialStream};
+use tokio::{io::{WriteHalf, split}, sync::mpsc, time};
 
 use south_common::{LSTBeacon, EPSBeacon, SensorboardBeacon, Beacon, ParseError};
 
+const OPENLST_HWID: u16 = 0x2DEC;
 
 #[derive(Debug)]
 pub enum GSTError {
     ConnectNATS(async_nats::ConnectErrorKind),
     SubscribeNATS(async_nats::SubscribeError),
     SerialError(tokio_serial::Error),
+}
+
+// This as well as serde/serde_cbor deps might be removed if a beacon type is used for local lst
+// telemetry in the future
+#[derive(serde::Serialize)]
+struct NatsTelemetry<T: serde::Serialize> {
+    timestamp: i64,
+    value: T,
+}
+impl<T: serde::Serialize> NatsTelemetry<T> {
+    pub fn new(timestamp: i64, value: T) -> Self {
+        Self { timestamp, value }
+    }
 }
 
 fn crc_ccitt(bytes: &[u8]) -> u16 {
@@ -30,34 +50,102 @@ fn crc_ccitt(bytes: &[u8]) -> u16 {
     crc
 }
 
+async fn nats_thread(config: GSTConfig, mut receiver: mpsc::Receiver<(&'static str, Vec<u8>)>) {
+    loop {
+        let nats_client = loop {
+            match async_nats::ConnectOptions::with_user_and_password(config.nats_user.clone(), config.nats_pwd.clone())
+                .connect(config.nats_address.clone())
+                .await.map_err(|e| GSTError::ConnectNATS(e.kind())) {
+
+                Ok(client) => {
+                    println!("[NATS] succesfully connected to NATS server on {} with user {}", config.nats_address, config.nats_user);
+                    break client;
+                },
+                Err(e) => eprintln!("[ERROR] Could not connect to NATS server: {:?}, retrying in 3s", e),
+            }
+            time::sleep(Duration::from_secs(3)).await;
+        };
+        let (address, bytes) = receiver.recv().await.unwrap();
+        if let Err(e) = nats_client.publish(address, bytes.into()).await {
+            eprintln!("[ERROR] lost connection to NATS server: {:?}", e);
+            break;
+        }
+    }
+}
+
+async fn telemetry_request_thread(mut lst_sender: LSTSender<FromTokio<WriteHalf<SerialStream>>>) {
+    const LST_TM_INTERVALL_MS: u64 = 10_000;
+    loop {
+        time::sleep(Duration::from_millis(LST_TM_INTERVALL_MS)).await;
+        if let Err(e) = lst_sender.send_cmd(LSTCmd::GetTelem).await {
+            eprintln!("[ERROR] could not send cmt over uart: {:?}", e);
+        }
+    }
+}
+
+async fn local_lst_telemetry(nats_sender: &Option<mpsc::Sender<(&'static str, Vec<u8>)>>, tm: LSTTelemetry) {
+
+    let timestamp = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards")
+        .as_millis() as i64;
+
+    println!("[LST] Received Telemetry at {}", timestamp);
+
+    print_lst_value!(tm, uptime);
+    print_lst_value!(tm, rssi);
+    print_lst_value!(tm, packets_good);
+    print_lst_value!(tm, packets_rejected_checksum);
+
+    pub_lst_value!(nats_sender, tm, timestamp, (
+        uptime,
+        rssi,
+        lqi,
+        packets_sent,
+        packets_good,
+        packets_rejected_checksum,
+        packets_rejected_other
+    ));
+}
+
 pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
-    let nats_client = async_nats::ConnectOptions::with_user_and_password(config.nats_user, config.nats_pwd)
-        .connect(config.nats_address)
-        .await.map_err(|e| GSTError::ConnectNATS(e.kind()))?;
-    
-    let uart_rx: SerialStream =
-        tokio_serial::new(config.serial_port, config.serial_baud)
+
+    // Initialize UART and LST
+    let (uart_rx, uart_tx) =
+        split(tokio_serial::new(config.serial_port.clone(), config.serial_baud)
             .open_native_async()
-            .map_err(|e| GSTError::SerialError(e))?;
+            .map_err(|e| GSTError::SerialError(e))?);
 
     let mut lst_receiver = LSTReceiver::new(FromTokio::new(uart_rx));
+    let lst_sender = LSTSender::new(FromTokio::new(uart_tx), OPENLST_HWID);
 
+    tokio::spawn(telemetry_request_thread(lst_sender));
+
+    // Initialize beacons(
     let mut lst_beacon = LSTBeacon::new();
     let mut eps_beacon = EPSBeacon::new();
     let mut sensorboard_beacon = SensorboardBeacon::new();
+
+    // Connect to nats
+    let nats_sender = if config.connect {
+        let (sender, receiver) = mpsc::channel(30);
+        tokio::spawn(nats_thread(config, receiver));
+        Some(sender)
+    } else {
+        None
+    };
 
     loop {
         match lst_receiver.receive().await {
             Ok(msg) => {
                 match msg {
                     LSTMessage::Relay(data) => {
-                        parse_beacon!(data, lst_beacon, nats_client, (uptime, rssi, packets_good));
-                        parse_beacon!(data, eps_beacon, nats_client, (bat1_voltage));
-                        parse_beacon!(data, sensorboard_beacon, nats_client, (imu1_accel_full_range, internal_temperature));
+                        parse_beacon!(data, lst_beacon, nats_sender, (uptime, rssi, packets_good));
+                        parse_beacon!(data, eps_beacon, nats_sender, (bat1_voltage));
+                        parse_beacon!(data, sensorboard_beacon, nats_sender, (imu1_accel_full_range, internal_temperature));
                     },
-                    LSTMessage::Telem(_) => {
-                        println!("[LST] Telem");
-                        // TODO
+                    LSTMessage::Telem(tm) => {
+                        local_lst_telemetry(&nats_sender, tm).await;
                     },
                     LSTMessage::Ack => println!("[LST] Ack"),
                     LSTMessage::Nack => println!("[LST] Nack"),
@@ -72,9 +160,10 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
 }
 
 
-#[derive(Config)]
+#[derive(Config, Clone)]
 pub struct GSTConfig {
     // -- Nats
+    pub connect: bool,
     pub nats_address: String,
     pub nats_user: String,
     pub nats_pwd: String,
@@ -86,6 +175,7 @@ impl GSTConfig {
     /// Creates a new configuration with default values
     pub fn new() -> Self {
         Self {
+            connect: true,
             nats_address: String::from("127.0.0.1"),
             nats_user: String::from("nats"),
             nats_pwd: String::from("nats"),
