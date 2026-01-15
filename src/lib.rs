@@ -5,7 +5,7 @@ use embedded_io_adapters::tokio_1::FromTokio;
 use openlst_driver::lst_receiver::{LSTMessage, LSTReceiver};
 use tokio_serial::{SerialPortBuilderExt, SerialStream};
 
-use south_common::{LowRateTelemetry, MidRateTelemetry, HighRateTelemetry, Beacon, ParseError};
+use south_common::{LSTBeacon, EPSBeacon, SensorboardBeacon, Beacon, ParseError};
 
 
 #[derive(Debug)]
@@ -42,18 +42,18 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
 
     let mut lst_receiver = LSTReceiver::new(FromTokio::new(uart_rx));
 
-    let mut low_rate_telemetry = LowRateTelemetry::new();
-    let mut mid_rate_telemetry = MidRateTelemetry::new();
-    let mut high_rate_telemetry = HighRateTelemetry::new();
+    let mut lst_beacon = LSTBeacon::new();
+    let mut eps_beacon = EPSBeacon::new();
+    let mut sensorboard_beacon = SensorboardBeacon::new();
 
     loop {
         match lst_receiver.receive().await {
             Ok(msg) => {
                 match msg {
                     LSTMessage::Relay(data) => {
-                        parse_beacon!(data, low_rate_telemetry, nats_client, (uptime, rssi, packets_good));
-                        parse_beacon!(data, mid_rate_telemetry, nats_client, (bat1_voltage));
-                        parse_beacon!(data, high_rate_telemetry, nats_client, (imu1_accel_full_range, internal_temperature));
+                        parse_beacon!(data, lst_beacon, nats_client, (uptime, rssi, packets_good));
+                        parse_beacon!(data, eps_beacon, nats_client, (bat1_voltage));
+                        parse_beacon!(data, sensorboard_beacon, nats_client, (imu1_accel_full_range, internal_temperature));
                     },
                     LSTMessage::Telem(_) => {
                         println!("[LST] Telem");
