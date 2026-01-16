@@ -1,18 +1,15 @@
 
 #[macro_export]
 macro_rules! parse_beacon {
-    ($data: ident, $beacon:ident, $nats_client:ident)  => {
-        parse_beacon!($data, $beacon, $nats_client, ());
-    };
-    ($data: ident, $beacon:ident, $nats_sender:ident, ($($field:ident),*)) => {
+    ($data: ident, $beacon:ident, $nats_sender:ident $(, ($($field:ident),*))?) => {
         match $beacon.from_bytes($data, &mut crc_ccitt) {
             Ok(()) => {
                 println!("[BEACON] Parsed {} at {}", stringify!($beacon), $beacon.timestamp);
-                $(
+                $($(
                     if let Some(value) = $beacon.$field {
                         println!("[TELEM] {}: {:#?}", stringify!($field), value);
                     }
-                )*
+                )*)?
                 if let Some(sender) = &$nats_sender {
                     for telem in $beacon.serialize() {
                         let _ = sender.send(telem).await;
