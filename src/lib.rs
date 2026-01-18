@@ -22,7 +22,7 @@ pub enum GSTError {
     SerialError(tokio_serial::Error),
 }
 
-// This as well as serde/serde_cbor deps might be removed if a beacon type is used for local lst
+// This might be removed if a beacon type is used for local lst
 // telemetry in the future
 #[derive(serde::Serialize)]
 struct NatsTelemetry<T: serde::Serialize> {
@@ -48,6 +48,15 @@ fn crc_ccitt(bytes: &[u8]) -> u16 {
         }
     }
     crc
+}
+
+struct CborSerializer;
+impl south_common::Serializer for CborSerializer {
+    type Error = serde_cbor::Error;
+    fn serialize<T: serde::Serialize>(&self, value: &T)
+        -> Result<std::vec::Vec<u8>, Self::Error> {
+        serde_cbor::to_vec(value)
+    }
 }
 
 async fn nats_thread(config: GSTConfig, mut receiver: mpsc::Receiver<(&'static str, Vec<u8>)>) {

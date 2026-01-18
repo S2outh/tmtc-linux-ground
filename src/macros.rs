@@ -11,8 +11,13 @@ macro_rules! parse_beacon {
                     }
                 )*)?
                 if let Some(sender) = &$nats_sender {
-                    for telem in $beacon.serialize() {
-                        let _ = sender.send(telem).await;
+                    match $beacon.serialize(&CborSerializer) {
+                        Ok(serialized) => {
+                            for value in serialized {
+                                let _ = sender.send(value).await;
+                            }
+                        },
+                        Err(_) => eprintln!("[ERROR] could not serialize received value")
                     }
                 }
             }
