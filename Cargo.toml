@@ -15,8 +15,8 @@ simple_config = { git = "https://github.com/Eleocraft/simple_config_rs.git" }
 south-common = { version = "2.0.0", git = "ssh://git@github.com/S2outh/south-common.git", features = ["serde"] }
 #south-common = { version = "0.2.0", path = "/home/eliseoc/WueSpace/South/south-common", features = ["serde"] }
 
-openlst-driver = { git = "ssh://git@github.com/S2outh/RocketLST-software.git", features = ["std"] }
-#openlst-driver = { path = "/home/eliseoc/WueSpace/South/Air/rocketlst/openlst-driver", features = ["std"] }
+openlst-driver = { git = "ssh://git@github.com/S2outh/RocketLST-software.git" }
+#openlst-driver = { path = "/home/eliseoc/WueSpace/South/Air/rocketlst/openlst-driver" }
 
 serde = { version = "1.0.228", default-features = false, features = ["derive"] }
 serde_cbor = { version = "0.11.2" }

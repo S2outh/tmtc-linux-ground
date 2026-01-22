@@ -87,7 +87,7 @@ async fn telemetry_request_thread(mut lst_sender: LSTSender<FromTokio<WriteHalf<
     loop {
         time::sleep(Duration::from_millis(LST_TM_INTERVALL_MS)).await;
         if let Err(e) = lst_sender.send_cmd(LSTCmd::GetTelem).await {
-            eprintln!("[ERROR] could not send cmt over uart: {:?}", e);
+            eprintln!("[ERROR] could not send cmd over serial: {:?}", e);
         }
     }
 }
@@ -151,7 +151,7 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
                     LSTMessage::Relay(data) => {
                         parse_beacon!(data, lst_beacon, nats_sender, (uptime, rssi, packets_good));
                         parse_beacon!(data, eps_beacon, nats_sender, (bat1_voltage));
-                        parse_beacon!(data, sensorboard_beacon, nats_sender, (imu1_accel_full_range, internal_temperature));
+                        parse_beacon!(data, sensorboard_beacon, nats_sender, (imu1_accel_full_range, baro_pressure, internal_temperature));
                     },
                     LSTMessage::Telem(tm) => {
                         local_lst_telemetry(&nats_sender, tm).await;

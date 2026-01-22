@@ -716,8 +716,8 @@ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 
 [[package]]
 name = "openlst-driver"
-version = "0.1.0"
-source = "git+ssh://git@github.com/S2outh/RocketLST-software.git#11b2b173c9fcf36030cb1df32144d593968f2d0e"
+version = "1.0.0"
+source = "git+ssh://git@github.com/S2outh/RocketLST-software.git#95d59aa9e38ec1002c70f9d262807368e7c25d35"
 dependencies = [
  "embedded-io-async",
  "heapless",
@@ -818,9 +818,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.105"
+version = "1.0.106"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "535d180e0ecab6268a3e718bb9fd44db66bbbc256257165fc699dadf70d16fe7"
+checksum = "8fd00f0bb2e90d81d1044c2b32617f68fcb9fa3bb7640c23e9c748e53fb30934"
 dependencies = [
  "unicode-ident",
 ]
@@ -1189,7 +1189,7 @@ dependencies = [
 [[package]]
 name = "south-common"
 version = "2.0.0"
-source = "git+ssh://git@github.com/S2outh/south-common.git#cb654eff488586a14e9a5a61d017f3d84a2d6fad"
+source = "git+ssh://git@github.com/S2outh/south-common.git#a4fc144477d4901d33efa2cc363fd8b5dd71aff4"
 dependencies = [
  "tmtc-system",
 ]
@@ -1861,6 +1861,6 @@ dependencies = [
 
 [[package]]
 name = "zmij"
-version = "1.0.15"
+version = "1.0.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94f63c051f4fe3c1509da62131a678643c5b6fbdc9273b2b79d4378ebda003d2"
+checksum = "dfcd145825aace48cff44a8844de64bf75feec3080e0aa5cdbde72961ae51a65"
