@@ -83,9 +83,9 @@ async fn nats_thread(config: GSTConfig, mut receiver: mpsc::Receiver<(&'static s
 }
 
 async fn telemetry_request_thread(mut lst_sender: LSTSender<FromTokio<WriteHalf<SerialStream>>>) {
-    const LST_TM_INTERVALL_MS: u64 = 10_000;
+    const LST_TM_INTERVALL: Duration = Duration::from_secs(10);
     loop {
-        time::sleep(Duration::from_millis(LST_TM_INTERVALL_MS)).await;
+        time::sleep(LST_TM_INTERVALL).await;
         if let Err(e) = lst_sender.send_cmd(LSTCmd::GetTelem).await {
             eprintln!("[ERROR] could not send cmd over serial: {:?}", e);
         }
@@ -103,6 +103,8 @@ async fn local_lst_telemetry(nats_sender: &Option<mpsc::Sender<(&'static str, Ve
 
     print_lst_value!(tm, uptime);
     print_lst_value!(tm, rssi);
+    print_lst_value!(tm, lqi);
+    print_lst_value!(tm, packets_sent);
     print_lst_value!(tm, packets_good);
     print_lst_value!(tm, packets_rejected_checksum);
 

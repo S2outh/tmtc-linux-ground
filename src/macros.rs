@@ -43,12 +43,12 @@ macro_rules! print_lst_value {
 #[macro_export]
 macro_rules! pub_lst_value {
     ($nats_sender: ident, $lst_telem:ident, $timestamp: ident, ($($field:ident),*)) => {
-        $(
-            if let Some(sender) = $nats_sender {
+        if let Some(sender) = $nats_sender {
+            $(
                 let nats_value = NatsTelemetry::new($timestamp, $lst_telem.$field);
                 let bytes = serde_cbor::to_vec(&nats_value).unwrap();
                 let _ = sender.send((concat!("groundstation.lst.", stringify!($field)), bytes)).await;
-            }
-        )*
+            )*
+        }
     }
 }
