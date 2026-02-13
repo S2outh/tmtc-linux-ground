@@ -26,11 +26,11 @@ pub enum GSTError {
 // telemetry in the future
 #[derive(serde::Serialize)]
 struct NatsTelemetry<T: serde::Serialize> {
-    timestamp: i64,
+    timestamp: u64,
     value: T,
 }
 impl<T: serde::Serialize> NatsTelemetry<T> {
-    pub fn new(timestamp: i64, value: T) -> Self {
+    pub fn new(timestamp: u64, value: T) -> Self {
         Self { timestamp, value }
     }
 }
@@ -74,10 +74,12 @@ async fn nats_thread(config: GSTConfig, mut receiver: mpsc::Receiver<(&'static s
             }
             time::sleep(Duration::from_secs(3)).await;
         };
-        let (address, bytes) = receiver.recv().await.unwrap();
-        if let Err(e) = nats_client.publish(address, bytes.into()).await {
-            eprintln!("[ERROR] lost connection to NATS server: {:?}", e);
-            break;
+        loop {
+            let (address, bytes) = receiver.recv().await.unwrap();
+            if let Err(e) = nats_client.publish(address, bytes.into()).await {
+                eprintln!("[ERROR] lost connection to NATS server: {:?}", e);
+                break;
+            }
         }
     }
 }
@@ -97,7 +99,7 @@ async fn local_lst_telemetry(nats_sender: &Option<mpsc::Sender<(&'static str, Ve
     let timestamp = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("Time went backwards")
-        .as_millis() as i64;
+        .as_millis() as u64;
 
     println!("[LST] Received Telemetry at {}", timestamp);
 
