@@ -11,7 +11,7 @@ use openlst_driver::{lst_receiver::{LSTMessage, LSTReceiver, LSTTelemetry}, lst_
 use tokio_serial::{SerialPortBuilderExt, SerialStream};
 use tokio::{io::{WriteHalf, split}, sync::mpsc, time};
 
-use south_common::{LSTBeacon, EPSBeacon, SensorboardBeacon, Beacon, ParseError};
+use south_common::{LSTBeacon, EPSBeacon, HighRateUpperSensorBeacon, LowRateUpperSensorBeacon, LowerSensorBeacon, Beacon, ParseError};
 
 const OPENLST_HWID: u16 = 0x2DEC;
 
@@ -137,7 +137,9 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
     // Initialize beacons(
     let mut lst_beacon = LSTBeacon::new();
     let mut eps_beacon = EPSBeacon::new();
-    let mut sensorboard_beacon = SensorboardBeacon::new();
+    let mut high_rate_upper_beacon = HighRateUpperSensorBeacon::new();
+    let mut low_rate_upper_beacon = LowRateUpperSensorBeacon::new();
+    let mut lower_sensor_beacon = LowerSensorBeacon::new();
 
     // Connect to nats
     let nats_sender = if config.connect {
@@ -155,7 +157,9 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
                     LSTMessage::Relay(data) => {
                         parse_beacon!(data, lst_beacon, nats_sender, (uptime, rssi, packets_good));
                         parse_beacon!(data, eps_beacon, nats_sender, (bat1_voltage));
-                        parse_beacon!(data, sensorboard_beacon, nats_sender, (imu1_accel_full_range, baro_pressure, internal_temperature));
+                        parse_beacon!(data, high_rate_upper_beacon, nats_sender, (imu1_accel_full_range));
+                        parse_beacon!(data, low_rate_upper_beacon, nats_sender, (gps_pos));
+                        parse_beacon!(data, lower_sensor_beacon, nats_sender);
                     },
                     LSTMessage::Telem(tm) => {
                         local_lst_telemetry(&nats_sender, tm).await;
