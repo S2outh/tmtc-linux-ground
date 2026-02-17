@@ -1,7 +1,13 @@
+#![feature(const_trait_impl)]
+#![feature(const_cmp)]
+
 mod macros;
+mod ground_tm_defs;
+extern crate alloc;
 
 use serde;
 use serde_cbor;
+
 
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
@@ -11,7 +17,10 @@ use openlst_driver::{lst_receiver::{LSTMessage, LSTReceiver, LSTTelemetry}, lst_
 use tokio_serial::{SerialPortBuilderExt, SerialStream};
 use tokio::{io::{WriteHalf, split}, sync::mpsc, time};
 
-use south_common::{LSTBeacon, EPSBeacon, HighRateUpperSensorBeacon, LowRateUpperSensorBeacon, LowerSensorBeacon, Beacon, ParseError};
+use south_common::{
+    beacons::{LSTBeacon, EPSBeacon, HighRateUpperSensorBeacon, LowRateUpperSensorBeacon, LowerSensorBeacon},
+    tmtc_system::{Beacon, ParseError, ground_tm::{Serializer, SerializableTMValue}}
+};
 
 const OPENLST_HWID: u16 = 0x2DEC;
 
@@ -20,19 +29,6 @@ pub enum GSTError {
     ConnectNATS(async_nats::ConnectErrorKind),
     SubscribeNATS(async_nats::SubscribeError),
     SerialError(tokio_serial::Error),
-}
-
-// This might be removed if a beacon type is used for local lst
-// telemetry in the future
-#[derive(serde::Serialize)]
-struct NatsTelemetry<T: serde::Serialize> {
-    timestamp: u64,
-    value: T,
-}
-impl<T: serde::Serialize> NatsTelemetry<T> {
-    pub fn new(timestamp: u64, value: T) -> Self {
-        Self { timestamp, value }
-    }
 }
 
 fn crc_ccitt(bytes: &[u8]) -> u16 {
@@ -51,9 +47,9 @@ fn crc_ccitt(bytes: &[u8]) -> u16 {
 }
 
 struct CborSerializer;
-impl south_common::Serializer for CborSerializer {
+impl Serializer for CborSerializer {
     type Error = serde_cbor::Error;
-    fn serialize<T: serde::Serialize>(&self, value: &T)
+    fn serialize_value<T: serde::Serialize>(&self, value: &T)
         -> Result<std::vec::Vec<u8>, Self::Error> {
         serde_cbor::to_vec(value)
     }
@@ -111,13 +107,13 @@ async fn local_lst_telemetry(nats_sender: &Option<mpsc::Sender<(&'static str, Ve
     print_lst_value!(tm, packets_rejected_checksum);
 
     pub_lst_value!(nats_sender, tm, timestamp, (
-        uptime,
-        rssi,
-        lqi,
-        packets_sent,
-        packets_good,
-        packets_rejected_checksum,
-        packets_rejected_other
+        (Uptime, uptime),
+        (Rssi, rssi),
+        (Lqi, lqi),
+        (PacketsSent, packets_sent),
+        (PacketsGood, packets_good),
+        (PacketsBadChecksum, packets_rejected_checksum),
+        (PacketsBadOther, packets_rejected_other)
     ));
 }
 

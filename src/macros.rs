@@ -42,12 +42,14 @@ macro_rules! print_lst_value {
 
 #[macro_export]
 macro_rules! pub_lst_value {
-    ($nats_sender: ident, $lst_telem:ident, $timestamp: ident, ($($field:ident),*)) => {
+    ($nats_sender: ident, $lst_telem:ident, $timestamp: ident, ($(($def:ident, $field:ident)),*)) => {
         if let Some(sender) = $nats_sender {
             $(
-                let nats_value = NatsTelemetry::new($timestamp, $lst_telem.$field);
-                let bytes = serde_cbor::to_vec(&nats_value).unwrap();
-                let _ = sender.send((concat!("groundstation.lst.", stringify!($field)), bytes)).await;
+                let serialized = $lst_telem.$field.serialize_ground(&ground_tm_defs::groundstation::lst::$def, $timestamp, &CborSerializer)
+                                    .expect("could not serialize value");
+                for v in serialized {
+                    let _ = sender.send(v).await;
+                }
             )*
         }
     }
