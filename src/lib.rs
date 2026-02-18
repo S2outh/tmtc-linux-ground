@@ -99,14 +99,15 @@ async fn local_lst_telemetry(nats_sender: &Option<mpsc::Sender<(&'static str, Ve
 
     println!("[LST] Received Telemetry at {}", timestamp);
 
-    print_lst_value!(tm, uptime);
-    print_lst_value!(tm, rssi);
-    print_lst_value!(tm, lqi);
-    print_lst_value!(tm, packets_sent);
-    print_lst_value!(tm, packets_good);
-    print_lst_value!(tm, packets_rejected_checksum);
+    print_lst_values!(tm, (
+        Rssi,
+        Lqi,
+        PacketsGood,
+        PacketsRejectedChecksum,
+        PacketsRejectedOther
+    ));
 
-    pub_lst_value!(nats_sender, tm, timestamp, (
+    pub_lst_values!(nats_sender, tm, timestamp, (
         Uptime,
         Rssi,
         Lqi,
@@ -151,9 +152,9 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
             Ok(msg) => {
                 match msg {
                     LSTMessage::Relay(data) => {
-                        parse_beacon!(data, lst_beacon, nats_sender, (uptime, rssi, packets_good));
+                        parse_beacon!(data, lst_beacon, nats_sender, (packets_sent));
                         parse_beacon!(data, eps_beacon, nats_sender, (bat1_voltage));
-                        parse_beacon!(data, high_rate_upper_beacon, nats_sender, (imu1_accel_full_range));
+                        parse_beacon!(data, high_rate_upper_beacon, nats_sender);
                         parse_beacon!(data, low_rate_upper_beacon, nats_sender, (gps_pos));
                         parse_beacon!(data, lower_sensor_beacon, nats_sender);
                     },

@@ -725,7 +725,7 @@ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 [[package]]
 name = "openlst-driver"
 version = "1.0.0"
-source = "git+ssh://git@github.com/S2outh/RocketLST-software.git#44b1cbdfe49f0108b9add0a45192c085e1862c1f"
+source = "git+ssh://git@github.com/S2outh/RocketLST-software.git#1657b4224a3f92007332a363167e08d0eec27696"
 dependencies = [
  "embedded-io-async",
  "heapless",
@@ -1197,7 +1197,7 @@ dependencies = [
 [[package]]
 name = "south-common"
 version = "3.0.0"
-source = "git+ssh://git@github.com/S2outh/south-common.git#4f589efe23df5f95456db75728443585f163a8ab"
+source = "git+ssh://git@github.com/S2outh/south-common.git#b833dfd8fa60bc132af474d275d4cc2ba6f4dacd"
 dependencies = [
  "bitflags 2.11.0",
  "libm",
@@ -1349,8 +1349,8 @@ dependencies = [
 
 [[package]]
 name = "tmtc-system"
-version = "4.4.2"
-source = "git+ssh://git@github.com/S2outh/telemetry-system.git#0eb07c659d8f7721f180e7ff61563eba121d9cab"
+version = "4.5.0"
+source = "git+ssh://git@github.com/S2outh/telemetry-system.git#fb80963b28bc1d38d453026256c6667fde6c276f"
 dependencies = [
  "serde",
  "tmtc-system-macros",
@@ -1359,7 +1359,7 @@ dependencies = [
 [[package]]
 name = "tmtc-system-macros"
 version = "0.1.0"
-source = "git+ssh://git@github.com/S2outh/telemetry-system.git#0eb07c659d8f7721f180e7ff61563eba121d9cab"
+source = "git+ssh://git@github.com/S2outh/telemetry-system.git#fb80963b28bc1d38d453026256c6667fde6c276f"
 dependencies = [
  "heck",
  "proc-macro2",

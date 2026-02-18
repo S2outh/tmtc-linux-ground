@@ -22,10 +22,12 @@
         devShells.default =
         let
           rust = pkgs.fenix.latest.toolchain;
+          rust-analyzer = pkgs.fenix.rust-analyzer;
         in
         pkgs.mkShell {
           buildInputs = [
             rust
+            rust-analyzer
             pkgs.cargo-edit
           ];
         };
