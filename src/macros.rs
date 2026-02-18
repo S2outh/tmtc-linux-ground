@@ -42,15 +42,17 @@ macro_rules! print_lst_value {
 
 #[macro_export]
 macro_rules! pub_lst_value {
-    ($nats_sender: ident, $lst_telem:ident, $timestamp: ident, ($(($def:ident, $field:ident)),*)) => {
-        if let Some(sender) = $nats_sender {
-            $(
-                let serialized = $lst_telem.$field.serialize_ground(&ground_tm_defs::groundstation::lst::$def, $timestamp, &CborSerializer)
-                                    .expect("could not serialize value");
-                for v in serialized {
-                    let _ = sender.send(v).await;
-                }
-            )*
+    ($nats_sender: ident, $lst_telem:ident, $timestamp: ident, ($($field:ident),*)) => {
+        paste::paste! {
+            if let Some(sender) = $nats_sender {
+                $(
+                    let serialized = $lst_telem.[<$field: snake>].serialize_ground(&ground_tm_defs::groundstation::lst::$field, $timestamp, &CborSerializer)
+                                        .expect("could not serialize value");
+                    for v in serialized {
+                        let _ = sender.send(v).await;
+                    }
+                )*
+            }
         }
     }
 }

@@ -107,13 +107,13 @@ async fn local_lst_telemetry(nats_sender: &Option<mpsc::Sender<(&'static str, Ve
     print_lst_value!(tm, packets_rejected_checksum);
 
     pub_lst_value!(nats_sender, tm, timestamp, (
-        (Uptime, uptime),
-        (Rssi, rssi),
-        (Lqi, lqi),
-        (PacketsSent, packets_sent),
-        (PacketsGood, packets_good),
-        (PacketsBadChecksum, packets_rejected_checksum),
-        (PacketsBadOther, packets_rejected_other)
+        Uptime,
+        Rssi,
+        Lqi,
+        PacketsSent,
+        PacketsGood,
+        PacketsRejectedChecksum,
+        PacketsRejectedOther
     ));
 }
 

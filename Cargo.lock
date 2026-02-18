@@ -725,7 +725,7 @@ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 [[package]]
 name = "openlst-driver"
 version = "1.0.0"
-source = "git+ssh://git@github.com/S2outh/RocketLST-software.git#b46c0b22e63fc2afe4c06a656b9a1e3fa1dc7829"
+source = "git+ssh://git@github.com/S2outh/RocketLST-software.git#44b1cbdfe49f0108b9add0a45192c085e1862c1f"
 dependencies = [
  "embedded-io-async",
  "heapless",
@@ -736,6 +736,12 @@ name = "openssl-probe"
 version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d05e27ee213611ffe7d6348b942e8f942b37114c00cc03cec254295a4a17852e"
+
+[[package]]
+name = "paste"
+version = "1.0.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
 
 [[package]]
 name = "pem-rfc7468"
@@ -1191,7 +1197,7 @@ dependencies = [
 [[package]]
 name = "south-common"
 version = "3.0.0"
-source = "git+ssh://git@github.com/S2outh/south-common.git#5207692f4a88484694f74efe8539061c2e69de95"
+source = "git+ssh://git@github.com/S2outh/south-common.git#4f589efe23df5f95456db75728443585f163a8ab"
 dependencies = [
  "bitflags 2.11.0",
  "libm",
@@ -1332,6 +1338,7 @@ dependencies = [
  "embedded-io-adapters",
  "embedded-io-async",
  "openlst-driver",
+ "paste",
  "serde",
  "serde_cbor",
  "simple_config",
