@@ -725,7 +725,7 @@ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 [[package]]
 name = "openlst-driver"
 version = "1.0.0"
-source = "git+ssh://git@github.com/S2outh/RocketLST-software.git#1657b4224a3f92007332a363167e08d0eec27696"
+source = "git+ssh://git@github.com/S2outh/RocketLST-software.git#0d12bdea302d07a9be03efb684e2cd554630722e"
 dependencies = [
  "embedded-io-async",
  "heapless",
@@ -1020,9 +1020,9 @@ dependencies = [
 
 [[package]]
 name = "security-framework-sys"
-version = "2.16.0"
+version = "2.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "321c8673b092a9a42605034a9879d73cb79101ed5fd117bc9a597b89b4e9e61a"
+checksum = "6ce2691df843ecc5d231c0b14ece2acc3efb62c0a398c7e1d875f3983ce020e3"
 dependencies = [
  "core-foundation-sys",
  "libc",
@@ -1197,7 +1197,7 @@ dependencies = [
 [[package]]
 name = "south-common"
 version = "3.0.0"
-source = "git+ssh://git@github.com/S2outh/south-common.git#b833dfd8fa60bc132af474d275d4cc2ba6f4dacd"
+source = "git+ssh://git@github.com/S2outh/south-common.git#b1ddf5daaa4ce053d4040694a61eb7c791a4e093"
 dependencies = [
  "bitflags 2.11.0",
  "libm",
@@ -1229,9 +1229,9 @@ checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 
 [[package]]
 name = "syn"
-version = "2.0.116"
+version = "2.0.117"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3df424c70518695237746f84cede799c9c58fcb37450d7b23716568cc8bc69cb"
+checksum = "e665b8803e7b1d2a727f4023456bbbbe74da67099c585258af0ad9c5013b9b99"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1350,7 +1350,7 @@ dependencies = [
 [[package]]
 name = "tmtc-system"
 version = "4.5.0"
-source = "git+ssh://git@github.com/S2outh/telemetry-system.git#fb80963b28bc1d38d453026256c6667fde6c276f"
+source = "git+https://github.com/S2outh/telemetry-system.git#fb80963b28bc1d38d453026256c6667fde6c276f"
 dependencies = [
  "serde",
  "tmtc-system-macros",
@@ -1359,7 +1359,7 @@ dependencies = [
 [[package]]
 name = "tmtc-system-macros"
 version = "0.1.0"
-source = "git+ssh://git@github.com/S2outh/telemetry-system.git#fb80963b28bc1d38d453026256c6667fde6c276f"
+source = "git+https://github.com/S2outh/telemetry-system.git#fb80963b28bc1d38d453026256c6667fde6c276f"
 dependencies = [
  "heck",
  "proc-macro2",
