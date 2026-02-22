@@ -12,10 +12,10 @@ tokio-serial = "5.4.5"
 
 simple_config = { git = "https://github.com/Eleocraft/simple_config_rs.git" }
 
-south-common = { git = "ssh://git@github.com/S2outh/south-common.git", features = ["ground"] }
+south-common = { git = "https://github.com/S2outh/south-common.git", features = ["ground"] }
 #south-common = { version = "0.2.0", path = "/home/eliseoc/WueSpace/South/south-common", features = ["serde"] }
 
-openlst-driver = { git = "ssh://git@github.com/S2outh/RocketLST-software.git" }
+openlst-driver = { git = "https://github.com/S2outh/RocketLST-software.git" }
 #openlst-driver = { path = "/home/eliseoc/WueSpace/South/Air/rocketlst/openlst-driver" }
 
 serde = { version = "1.0.228", default-features = false, features = ["derive"] }
