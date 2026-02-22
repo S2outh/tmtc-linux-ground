@@ -227,9 +227,9 @@ dependencies = [
 
 [[package]]
 name = "deranged"
-version = "0.5.6"
+version = "0.5.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cc3dc5ad92c2e2d1c193bbbbdf2ea477cb81331de4f3103f267ca18368b988c4"
+checksum = "7cd812cc2bc1d69d4764bd80df88b4317eaef9e773c75226407d9bc0876b211c"
 dependencies = [
  "powerfmt",
  "serde_core",
@@ -725,7 +725,7 @@ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 [[package]]
 name = "openlst-driver"
 version = "1.0.0"
-source = "git+ssh://git@github.com/S2outh/RocketLST-software.git#0d12bdea302d07a9be03efb684e2cd554630722e"
+source = "git+ssh://git@github.com/S2outh/RocketLST-software.git#07f2ac4116a45da3044eacc9c20ed6ac5a4a15c1"
 dependencies = [
  "embedded-io-async",
  "heapless",

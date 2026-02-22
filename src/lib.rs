@@ -84,7 +84,7 @@ async fn telemetry_request_thread(mut lst_sender: LSTSender<FromTokio<WriteHalf<
     const LST_TM_INTERVALL: Duration = Duration::from_secs(10);
     loop {
         time::sleep(LST_TM_INTERVALL).await;
-        if let Err(e) = lst_sender.send_cmd(LSTCmd::GetTelem).await {
+        if let Err(e) = lst_sender.cmd(LSTCmd::GetTelem).await {
             eprintln!("[ERROR] could not send cmd over serial: {:?}", e);
         }
     }
