@@ -50,6 +50,7 @@
 
           # set the rust src for rust_analyzer
           RUST_SRC_PATH = "${rust-toolchain}/lib/rustlib/src/rust/library";
+          # set c cross lib path for cross compilation
           CC_aarch64_unknown_linux_musl = "${aarch64-musl-cross.stdenv.cc}/bin/aarch64-unknown-linux-musl-cc";
         };
 

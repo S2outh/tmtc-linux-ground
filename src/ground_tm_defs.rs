@@ -3,7 +3,7 @@ use south_common::tmtc_system::telemetry_definition;
 
 #[telemetry_definition(id = 0, address = south_common::tmtc_system)]
 mod groundstation {
-    mod lst {
+    mod lst_linux {
         #[tmv(u32)]
         struct Uptime;
 

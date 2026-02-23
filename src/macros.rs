@@ -51,7 +51,7 @@ macro_rules! pub_lst_values {
     ($nats_sender: ident, $lst_telem:ident, $timestamp: ident, ($($field:ident),*)) => {
         paste::paste! {
             if let Some(sender) = $nats_sender { $(
-                let serialized = $lst_telem.[<$field: snake>].serialize_ground(&ground_tm_defs::groundstation::lst::$field, $timestamp, &CborSerializer)
+                let serialized = $lst_telem.[<$field: snake>].serialize_ground(&ground_tm_defs::groundstation::lst_linux::$field, $timestamp, &CborSerializer)
                                     .expect("could not serialize value");
                 for v in serialized {
                     let _ = sender.send(v).await;
