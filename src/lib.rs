@@ -5,11 +5,7 @@ mod macros;
 mod ground_tm_defs;
 extern crate alloc;
 
-use serde;
-use serde_cbor;
-
-
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::{convert::Infallible, time::{Duration, SystemTime, UNIX_EPOCH}};
 
 use simple_config::Config;
 use embedded_io_adapters::tokio_1::FromTokio;
@@ -48,10 +44,10 @@ fn crc_ccitt(bytes: &[u8]) -> u16 {
 
 struct CborSerializer;
 impl Serializer for CborSerializer {
-    type Error = serde_cbor::Error;
+    type Error = minicbor_serde::error::EncodeError<Infallible>;
     fn serialize_value<T: serde::Serialize>(&self, value: &T)
-        -> Result<std::vec::Vec<u8>, Self::Error> {
-        serde_cbor::to_vec(value)
+        -> Result<alloc::vec::Vec<u8>, Self::Error> {
+        minicbor_serde::to_vec(value)
     }
 }
 
@@ -124,7 +120,7 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
     let (uart_rx, uart_tx) =
         split(tokio_serial::new(config.serial_port.clone(), config.serial_baud)
             .open_native_async()
-            .map_err(|e| GSTError::SerialError(e))?);
+            .map_err(GSTError::SerialError)?);
 
     let mut lst_receiver = LSTReceiver::new(FromTokio::new(uart_rx));
     let lst_sender = LSTSender::new(FromTokio::new(uart_tx), OPENLST_HWID);
