@@ -127,7 +127,7 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
 
     tokio::spawn(telemetry_request_thread(lst_sender));
 
-    // Initialize beacons(
+    // Initialize beacons
     let mut lst_beacon = LSTBeacon::new();
     let mut eps_beacon = EPSBeacon::new();
     let mut high_rate_upper_beacon = HighRateUpperSensorBeacon::new();
@@ -151,7 +151,7 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
                         parse_beacon!(data, lst_beacon, nats_sender, (packets_sent));
                         parse_beacon!(data, eps_beacon, nats_sender, (bat1_voltage));
                         parse_beacon!(data, high_rate_upper_beacon, nats_sender);
-                        parse_beacon!(data, low_rate_upper_beacon, nats_sender, (gps_pos));
+                        parse_beacon!(data, low_rate_upper_beacon, nats_sender, (gps_ecef));
                         parse_beacon!(data, lower_sensor_beacon, nats_sender);
                     },
                     LSTMessage::Telem(tm) => {
