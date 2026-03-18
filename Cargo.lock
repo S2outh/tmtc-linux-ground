@@ -101,9 +101,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.2.56"
+version = "1.2.57"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aebf35691d1bfb0ac386a69bac2fde4dd276fb618cf8bf4f5318fe285e821bb2"
+checksum = "7a0dd1ca384932ff3641c8718a02769f1698e7563dc6974ffd03346116310423"
 dependencies = [
  "find-msvc-tools",
  "shlex",
@@ -120,6 +120,28 @@ name = "cfg_aliases"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "613afe47fcd5fac7ccf1db93babcb082c5994d996f20b8b159f2ad1658eb5724"
+
+[[package]]
+name = "chell"
+version = "5.0.1"
+source = "git+https://github.com/S2outh/chell-sys.git#bedf7fcbcd76d59cdd9187214cec42df8423df0f"
+dependencies = [
+ "chell-macros",
+ "serde",
+]
+
+[[package]]
+name = "chell-macros"
+version = "0.1.0"
+source = "git+https://github.com/S2outh/chell-sys.git#bedf7fcbcd76d59cdd9187214cec42df8423df0f"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
+ "serde",
+ "serde_json",
+ "syn",
+]
 
 [[package]]
 name = "config_macro"
@@ -754,14 +776,14 @@ checksum = "cf97ec579c3c42f953ef76dbf8d55ac91fb219dde70e49aa4a6b7d74e9919050"
 
 [[package]]
 name = "once_cell"
-version = "1.21.3"
+version = "1.21.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
+checksum = "9f7c3e4beb33f85d45ae3e3a1792185706c8e16d043238c593331cc7cd313b50"
 
 [[package]]
 name = "openlst-driver"
 version = "1.0.0"
-source = "git+https://github.com/S2outh/RocketLST-software.git#df484c28acef38eb8246ffcf19319af64410da3d"
+source = "git+https://github.com/S2outh/RocketLST-software.git#a8b9a087b23fa62a693c99a54e68a4f01163c753"
 dependencies = [
  "embedded-io-async",
  "heapless",
@@ -1135,9 +1157,9 @@ dependencies = [
 
 [[package]]
 name = "serialport"
-version = "4.7.3"
+version = "4.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2acaf3f973e8616d7ceac415f53fc60e190b2a686fbcf8d27d0256c741c5007b"
+checksum = "a4d91116f97173694f1642263b2ff837f80d933aa837e2314969f6728f661df3"
 dependencies = [
  "bitflags 2.11.0",
  "cfg-if",
@@ -1148,7 +1170,7 @@ dependencies = [
  "nix 0.26.4",
  "scopeguard",
  "unescaper",
- "winapi",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -1222,15 +1244,16 @@ dependencies = [
 
 [[package]]
 name = "south-common"
-version = "3.0.0"
-source = "git+https://github.com/S2outh/south-common.git#ef849dba4cd4293969058595f798e0653841647e"
+version = "4.0.0"
+source = "git+https://github.com/S2outh/south-common.git#804b52ea6599c02752fb0b6fb249d0cc027e3be2"
 dependencies = [
  "bitflags 2.11.0",
+ "chell",
  "libm",
  "lsm6dsv32",
  "serde",
+ "serde_json",
  "spin",
- "tmtc-system",
 ]
 
 [[package]]
@@ -1382,26 +1405,6 @@ dependencies = [
  "south-common",
  "tokio",
  "tokio-serial",
-]
-
-[[package]]
-name = "tmtc-system"
-version = "4.6.3"
-source = "git+https://github.com/S2outh/telemetry-system.git#5ae29bed90288c378f59bf7a6d28b30d8d04048f"
-dependencies = [
- "serde",
- "tmtc-system-macros",
-]
-
-[[package]]
-name = "tmtc-system-macros"
-version = "0.1.0"
-source = "git+https://github.com/S2outh/telemetry-system.git#5ae29bed90288c378f59bf7a6d28b30d8d04048f"
-dependencies = [
- "heck",
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]

@@ -15,7 +15,7 @@ use tokio::{io::{WriteHalf, split}, sync::mpsc, time};
 
 use south_common::{
     beacons::{LSTBeacon, EPSBeacon, HighRateUpperSensorBeacon, LowRateUpperSensorBeacon, LowerSensorBeacon},
-    tmtc_system::{Beacon, ParseError, ground_tm::{Serializer, SerializableTMValue}}
+    chell::{Beacon, ParseError, ground_tm::{Serializer, SerializableChellValue}}
 };
 
 const OPENLST_HWID: u16 = 0x2DEC;
