@@ -4,10 +4,10 @@ version = "1.0.0"
 edition = "2024"
 
 [dependencies]
-async-nats = "0.45.0"
+async-nats = "0.46.0"
 embedded-io-adapters = { version = "0.7.0", features = [ "tokio-1" ] }
 embedded-io-async = { version = "0.7.0", features = [ "std" ] }
-tokio = { version = "1.49.0", features = [ "rt-multi-thread", "macros" ] }
+tokio = { version = "1.50.0", features = [ "rt-multi-thread", "macros" ] }
 tokio-serial = "5.4.5"
 
 simple_config = { git = "https://github.com/Eleocraft/simple_config_rs.git" }
