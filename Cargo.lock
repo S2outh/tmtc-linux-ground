@@ -123,8 +123,8 @@ checksum = "613afe47fcd5fac7ccf1db93babcb082c5994d996f20b8b159f2ad1658eb5724"
 
 [[package]]
 name = "chell"
-version = "6.0.0"
-source = "git+https://github.com/S2outh/chell-sys.git#486188063d6dd9d16bf5edbbc176ad9b398ab9c4"
+version = "6.0.1"
+source = "git+https://github.com/S2outh/chell-sys.git#eca47997c5400859ab051d9237a418b04b9bed60"
 dependencies = [
  "chell-macros",
  "erased-serde",
@@ -133,8 +133,8 @@ dependencies = [
 
 [[package]]
 name = "chell-macros"
-version = "6.0.0"
-source = "git+https://github.com/S2outh/chell-sys.git#486188063d6dd9d16bf5edbbc176ad9b398ab9c4"
+version = "6.0.1"
+source = "git+https://github.com/S2outh/chell-sys.git#eca47997c5400859ab051d9237a418b04b9bed60"
 dependencies = [
  "heck",
  "proc-macro2",
@@ -1320,10 +1320,11 @@ dependencies = [
 [[package]]
 name = "south-common"
 version = "4.0.0"
-source = "git+https://github.com/S2outh/south-common.git#aac3d41a49cf3592661af8176a43adab27173f8b"
+source = "git+https://github.com/S2outh/south-common.git#2fbab51b40e29b1a330b801d1a5ef30c8e16cf1d"
 dependencies = [
  "bitflags 2.11.1",
  "chell",
+ "erased-serde",
  "libm",
  "lsm6dsv32",
  "rm3100",
@@ -1485,9 +1486,9 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "1.52.0"
+version = "1.52.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a91135f59b1cbf38c91e73cf3386fca9bb77915c45ce2771460c9d92f0f3d776"
+checksum = "b67dee974fe86fd92cc45b7a95fdd2f99a36a6d7b0d431a231178d3d670bbcc6"
 dependencies = [
  "bytes",
  "libc",
