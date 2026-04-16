@@ -5,7 +5,7 @@ mod macros;
 mod ground_tm_defs;
 extern crate alloc;
 
-use std::{convert::Infallible, time::{Duration, SystemTime, UNIX_EPOCH}};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use simple_config::Config;
 use embedded_io_adapters::tokio_1::FromTokio;
@@ -15,7 +15,7 @@ use tokio::{io::{WriteHalf, split}, sync::mpsc, time};
 
 use south_common::{
     beacons::{LSTBeacon, EPSBeacon, HighRateUpperSensorBeacon, LowRateUpperSensorBeacon, LowerSensorBeacon},
-    chell::{Beacon, ParseError, ground::{Serializer, SerializableChellValue}}
+    chell::{Beacon, ParseError, ground::SerializableChellValue}
 };
 
 const OPENLST_HWID: u16 = 0x2DEC;
@@ -42,13 +42,13 @@ fn crc_ccitt(bytes: &[u8]) -> u16 {
     crc
 }
 
-struct CborSerializer;
-impl Serializer for CborSerializer {
-    type Error = minicbor_serde::error::EncodeError<Infallible>;
-    fn serialize_value<T: serde::Serialize>(&self, value: &T)
-        -> Result<alloc::vec::Vec<u8>, Self::Error> {
-        minicbor_serde::to_vec(value)
-    }
+fn cbor_serializer(
+    value: &dyn erased_serde::Serialize,
+) -> Result<alloc::vec::Vec<u8>, erased_serde::Error> {
+    let mut buffer = alloc::vec::Vec::new();
+    let mut serializer = minicbor_serde::Serializer::new(&mut buffer);
+    value.erased_serialize(&mut <dyn erased_serde::Serializer>::erase(&mut serializer))?;
+    Ok(buffer)
 }
 
 async fn nats_thread(config: GSTConfig, mut receiver: mpsc::Receiver<(&'static str, Vec<u8>)>) {

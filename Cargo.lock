@@ -1474,6 +1474,7 @@ dependencies = [
  "async-nats",
  "embedded-io-adapters",
  "embedded-io-async",
+ "erased-serde",
  "minicbor-serde",
  "openlst-driver",
  "paste",
