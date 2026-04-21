@@ -123,8 +123,8 @@ checksum = "613afe47fcd5fac7ccf1db93babcb082c5994d996f20b8b159f2ad1658eb5724"
 
 [[package]]
 name = "chell"
-version = "6.0.1"
-source = "git+https://github.com/S2outh/chell-sys.git#eca47997c5400859ab051d9237a418b04b9bed60"
+version = "6.0.2"
+source = "git+https://github.com/S2outh/chell-sys.git#66b3c8eeb5398b62bac5fe21ae67a8bc36209e1e"
 dependencies = [
  "chell-macros",
  "erased-serde",
@@ -133,8 +133,8 @@ dependencies = [
 
 [[package]]
 name = "chell-macros"
-version = "6.0.1"
-source = "git+https://github.com/S2outh/chell-sys.git#eca47997c5400859ab051d9237a418b04b9bed60"
+version = "6.0.2"
+source = "git+https://github.com/S2outh/chell-sys.git#66b3c8eeb5398b62bac5fe21ae67a8bc36209e1e"
 dependencies = [
  "heck",
  "proc-macro2",
@@ -704,7 +704,7 @@ checksum = "5e5032e24019045c762d3c0f28f5b6b8bbf38563a65908389bf7978758920897"
 [[package]]
 name = "lsm6dsv32"
 version = "0.1.0"
-source = "git+ssh://git@github.com/S2outh/imu-driver.git#c7d6a65f1e1db4d82003c167eeb5f0e1e5f60596"
+source = "git+https://github.com/S2outh/imu-driver.git#c7d6a65f1e1db4d82003c167eeb5f0e1e5f60596"
 
 [[package]]
 name = "mach2"
@@ -969,9 +969,9 @@ dependencies = [
 
 [[package]]
 name = "rand"
-version = "0.8.5"
+version = "0.8.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "34af8d1a0e25924bc5b7c43c079c942339d8f0a8b57c39049bef581b46327404"
+checksum = "5ca0ecfa931c29007047d1bc58e623ab12e5590e8c7cc53200d5202b69266d8a"
 dependencies = [
  "libc",
  "rand_chacha",
@@ -1043,7 +1043,7 @@ dependencies = [
 [[package]]
 name = "rm3100"
 version = "0.1.0"
-source = "git+ssh://git@github.com/S2outh/magneto-driver.git#d3a7e28c94ce7b93f88c7954a0afa515ac6a7fde"
+source = "git+https://github.com/S2outh/magneto-driver.git#d3a7e28c94ce7b93f88c7954a0afa515ac6a7fde"
 dependencies = [
  "defmt",
 ]
@@ -1320,7 +1320,7 @@ dependencies = [
 [[package]]
 name = "south-common"
 version = "4.0.0"
-source = "git+https://github.com/S2outh/south-common.git#2fbab51b40e29b1a330b801d1a5ef30c8e16cf1d"
+source = "git+https://github.com/S2outh/south-common.git#3dd17fc2e74d542a0fecba40027b72622b1f662a"
 dependencies = [
  "bitflags 2.11.1",
  "chell",
@@ -1629,9 +1629,9 @@ checksum = "bc7d623258602320d5c55d1bc22793b57daff0ec7efc270ea7d55ce1d5f5471c"
 
 [[package]]
 name = "typenum"
-version = "1.19.0"
+version = "1.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "562d481066bde0658276a35467c4af00bdc6ee726305698a55b86e61d7ad82bb"
+checksum = "40ce102ab67701b8526c123c1bab5cbe42d7040ccfd0f64af1a385808d2f43de"
 
 [[package]]
 name = "unescaper"
