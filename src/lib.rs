@@ -14,7 +14,7 @@ use tokio_serial::{SerialPortBuilderExt, SerialStream};
 use tokio::{io::{WriteHalf, split}, sync::mpsc, time};
 
 use south_common::{
-    beacons::{LSTBeacon, EPSBeacon, HighRateUpperSensorBeacon, LowRateUpperSensorBeacon, LowerSensorBeacon},
+    beacons::{EPSBeacon, HighRateUpperSensorBeacon, LSTBeacon, LowRateUpperSensorBeacon, LowerSensorBeacon, PyroBeacon},
     chell::{Beacon, ParseError, ground::SerializableChellValue}
 };
 
@@ -133,6 +133,7 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
     let mut high_rate_upper_beacon = HighRateUpperSensorBeacon::new();
     let mut low_rate_upper_beacon = LowRateUpperSensorBeacon::new();
     let mut lower_sensor_beacon = LowerSensorBeacon::new();
+    let mut pyro_beacon = PyroBeacon::new();
 
     // Connect to nats
     let nats_sender = if config.connect {
@@ -153,6 +154,7 @@ pub async fn run(config: GSTConfig) -> Result<(), GSTError> {
                         parse_beacon!(data, high_rate_upper_beacon, nats_sender);
                         parse_beacon!(data, low_rate_upper_beacon, nats_sender, (gps_pos));
                         parse_beacon!(data, lower_sensor_beacon, nats_sender);
+                        parse_beacon!(data, pyro_beacon, nats_sender);
                     },
                     LSTMessage::Telem(tm) => {
                         local_lst_telemetry(&nats_sender, tm).await;
