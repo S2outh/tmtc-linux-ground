@@ -965,6 +965,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "radio-linux-ground"
+version = "1.0.0"
+dependencies = [
+ "async-nats",
+ "embedded-io-adapters",
+ "embedded-io-async",
+ "erased-serde",
+ "minicbor-serde",
+ "openlst-driver",
+ "paste",
+ "serde",
+ "simple_config",
+ "south-common",
+ "tokio",
+ "tokio-serial",
+]
+
+[[package]]
 name = "rand"
 version = "0.8.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1463,24 +1481,6 @@ checksum = "c8323304221c2a851516f22236c5722a72eaa19749016521d6dff0824447d96d"
 dependencies = [
  "displaydoc",
  "zerovec",
-]
-
-[[package]]
-name = "tmtc-linux-ground"
-version = "1.0.0"
-dependencies = [
- "async-nats",
- "embedded-io-adapters",
- "embedded-io-async",
- "erased-serde",
- "minicbor-serde",
- "openlst-driver",
- "paste",
- "serde",
- "simple_config",
- "south-common",
- "tokio",
- "tokio-serial",
 ]
 
 [[package]]
